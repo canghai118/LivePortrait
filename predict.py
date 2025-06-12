@@ -14,6 +14,10 @@ class Predictor(BasePredictor):
         self,
         source_image: Path = Input(description="Source image for animation"),
         driving_video: Path = Input(description="Driving video for animation"),
+        args: str = Input(
+            default="",
+            description="Additional arguments for the inference script",
+        ),
     ) -> Path:
         """Run a single prediction on the model"""
         image_filename = source_image.stem
@@ -21,6 +25,7 @@ class Predictor(BasePredictor):
 
         output_filename = f"{image_filename}--{video_filename}.mp4"
         print("output_filename------", output_filename)
+        args_list = args.split() if args else []
 
         # 执行命令行程序
         cmd = [
@@ -30,7 +35,7 @@ class Predictor(BasePredictor):
             str(source_image),
             "--driving",
             str(driving_video),
-        ]
+        ] + args_list
 
         subprocess.run(cmd, check=True)
 
