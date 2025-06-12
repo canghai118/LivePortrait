@@ -1,6 +1,7 @@
 # Prediction interface for Cog ⚙️
 # https://cog.run/python
 
+import subprocess
 from cog import BasePredictor, Input, Path
 
 
@@ -11,12 +12,26 @@ class Predictor(BasePredictor):
 
     def predict(
         self,
-        image: Path = Input(description="Grayscale input image"),
-        scale: float = Input(
-            description="Factor to scale image by", ge=0, le=10, default=1.5
-        ),
+        source_image: Path = Input(description="Source image for animation"),
+        driving_video: Path = Input(description="Driving video for animation"),
     ) -> Path:
         """Run a single prediction on the model"""
-        # processed_input = preprocess(image)
-        # output = self.model(processed_image, scale)
-        # return postprocess(output)
+        image_filename = source_image.name
+        video_filename = driving_video.name
+
+        output_filename = f"{image_filename}--{video_filename}.mp4"
+
+        # 执行命令行程序
+        cmd = [
+            "python",
+            "./inference_animals.py",
+            "--source",
+            str(source_image),
+            "--driving",
+            str(driving_video),
+        ]
+
+        subprocess.run(cmd, check=True)
+
+        # 返回输出文件路径
+        return Path(f"animations/{output_filename}")
