@@ -167,7 +167,8 @@ class GradioPipeline(LivePortraitPipeline):
         vy_ratio_crop_driving_video=-0.1,
         driving_smooth_observation_variance=3e-7,
         tab_selection=None,
-        v_tab_selection=None
+        v_tab_selection=None,
+        stitching_strength=0.3
     ):
         """ for video-driven portrait animation or video editing
         """
@@ -212,6 +213,7 @@ class GradioPipeline(LivePortraitPipeline):
                 'vx_ratio_crop_driving_video': vx_ratio_crop_driving_video,
                 'vy_ratio_crop_driving_video': vy_ratio_crop_driving_video,
                 'driving_smooth_observation_variance': driving_smooth_observation_variance,
+                'stitching_strength': stitching_strength
             }
             # update config from user input
             self.args = update_args(self.args, args_user)
@@ -612,6 +614,7 @@ class GradioPipelineAnimal(LivePortraitPipelineAnimal):
         flag_remap_input=False,
         driving_multiplier=1.0,
         flag_stitching=False,
+        stitching_strength=0.3,
         flag_crop_driving_video_input=False,
         scale=2.3,
         vx_ratio=0.0,
@@ -652,6 +655,7 @@ class GradioPipelineAnimal(LivePortraitPipelineAnimal):
                 'scale_crop_driving_video': scale_crop_driving_video,
                 'vx_ratio_crop_driving_video': vx_ratio_crop_driving_video,
                 'vy_ratio_crop_driving_video': vy_ratio_crop_driving_video,
+                'stitching_strength': stitching_strength
             }
             # update config from user input
             self.args = update_args(self.args, args_user)

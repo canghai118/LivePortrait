@@ -250,13 +250,14 @@ class LivePortraitWrapper(object):
 
         return delta
 
-    def stitching(self, kp_source: torch.Tensor, kp_driving: torch.Tensor) -> torch.Tensor:
+    def stitching(self, kp_source: torch.Tensor, kp_driving: torch.Tensor, stitching_strength: float = 1.0) -> torch.Tensor:
         """ conduct the stitching
         kp_source: Bxnum_kpx3
         kp_driving: Bxnum_kpx3
+        stitching_strength: 控制stitching强度，0-1之间，0表示完全关闭，1表示完全应用
         """
 
-        if self.stitching_retargeting_module is not None:
+        if self.stitching_retargeting_module is not None and stitching_strength > 0:
 
             bs, num_kp = kp_source.shape[:2]
 
@@ -266,8 +267,9 @@ class LivePortraitWrapper(object):
             delta_exp = delta[..., :3*num_kp].reshape(bs, num_kp, 3)  # 1x20x3
             delta_tx_ty = delta[..., 3*num_kp:3*num_kp+2].reshape(bs, 1, 2)  # 1x1x2
 
-            kp_driving_new += delta_exp
-            kp_driving_new[..., :2] += delta_tx_ty
+            # 应用强度控制
+            kp_driving_new += delta_exp * stitching_strength
+            kp_driving_new[..., :2] += delta_tx_ty * stitching_strength
 
             return kp_driving_new
 
@@ -347,7 +349,7 @@ class LivePortraitWrapperAnimal(LivePortraitWrapper):
         if inference_cfg.flag_force_cpu:
             self.device = 'cpu'
         else:
-            try: 
+            try:
                 if torch.backends.mps.is_available():
                     self.device = 'mps'
                 else:

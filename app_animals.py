@@ -162,6 +162,7 @@ with gr.Blocks(theme=gr.themes.Soft(font=[gr.themes.GoogleFont("Plus Jakarta San
         with gr.Accordion(open=False, label="Animation Options"):
             with gr.Row():
                 flag_stitching = gr.Checkbox(value=False, label="stitching (not recommended)")
+                stitching_strength = gr.Slider(minimum=0.0, maximum=1.0, value=0.3, step=0.1, label="stitching strength (lower for animals)")
                 flag_remap_input = gr.Checkbox(value=False, label="paste-back (not recommended)")
                 driving_multiplier = gr.Number(value=1.0, label="driving multiplier", minimum=0.0, maximum=2.0, step=0.02)
 
@@ -229,6 +230,7 @@ with gr.Blocks(theme=gr.themes.Soft(font=[gr.themes.GoogleFont("Plus Jakarta San
             flag_remap_input,
             driving_multiplier,
             flag_stitching,
+            stitching_strength,
             flag_crop_driving_video_input,
             scale,
             vx_ratio,

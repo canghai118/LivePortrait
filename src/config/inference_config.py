@@ -43,6 +43,7 @@ class InferenceConfig(PrintableConfig):
     flag_eye_retargeting: bool = False
     flag_lip_retargeting: bool = False
     flag_stitching: bool = True
+    stitching_strength: float = 1.0  # stitching强度，0-1之间，用于动物或其他需要减弱stitching效果的场景
     flag_relative_motion: bool = True
     flag_pasteback: bool = True
     flag_do_crop: bool = True

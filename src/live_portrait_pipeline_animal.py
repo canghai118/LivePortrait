@@ -132,7 +132,7 @@ class LivePortraitPipelineAnimal(object):
 
         ######## prepare for pasteback ########
         I_p_pstbk_lst = None
-        if inf_cfg.flag_pasteback and inf_cfg.flag_do_crop and inf_cfg.flag_stitching:
+        if inf_cfg.flag_pasteback and inf_cfg.flag_do_crop:
             I_p_pstbk_lst = []
             log("Prepared pasteback mask done.")
 
@@ -151,7 +151,7 @@ class LivePortraitPipelineAnimal(object):
         f_s = self.live_portrait_wrapper_animal.extract_feature_3d(I_s)
         x_s = self.live_portrait_wrapper_animal.transform_keypoint(x_s_info)
 
-        if inf_cfg.flag_pasteback and inf_cfg.flag_do_crop and inf_cfg.flag_stitching:
+        if inf_cfg.flag_pasteback and inf_cfg.flag_do_crop:
             mask_ori_float = prepare_paste_back(inf_cfg.mask_crop, crop_info['M_c2o'], dsize=(img_rgb.shape[1], img_rgb.shape[0]))
 
         ######## animate ########
@@ -179,14 +179,16 @@ class LivePortraitPipelineAnimal(object):
             if not inf_cfg.flag_stitching:
                 pass
             else:
-                x_d_i = self.live_portrait_wrapper_animal.stitching(x_s, x_d_i)
+                # 从参数中获取stitching强度，支持命令行和配置文件设置
+                stitching_strength = getattr(args, 'stitching_strength', getattr(inf_cfg, 'stitching_strength', 0.3))
+                x_d_i = self.live_portrait_wrapper_animal.stitching(x_s, x_d_i, stitching_strength)
 
             x_d_i = x_s + (x_d_i - x_s) * inf_cfg.driving_multiplier
             out = self.live_portrait_wrapper_animal.warp_decode(f_s, x_s, x_d_i)
             I_p_i = self.live_portrait_wrapper_animal.parse_output(out['out'])[0]
             I_p_lst.append(I_p_i)
 
-            if inf_cfg.flag_pasteback and inf_cfg.flag_do_crop and inf_cfg.flag_stitching:
+            if inf_cfg.flag_pasteback and inf_cfg.flag_do_crop:
                 I_p_pstbk = paste_back(I_p_i, crop_info['M_c2o'], img_rgb, mask_ori_float)
                 I_p_pstbk_lst.append(I_p_pstbk)
 

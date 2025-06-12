@@ -38,6 +38,13 @@ def main():
     tyro.extras.set_accent_color("bright_cyan")
     args = tyro.cli(ArgumentConfig)
 
+    # 针对动物优化默认参数
+    if not hasattr(args, '_stitching_strength_set_explicitly'):
+        # 如果用户没有显式设置stitching_strength，使用更适合动物的默认值
+        if args.stitching_strength == 1.0:  # 如果还是默认的人脸值
+            args.stitching_strength = 0.3  # 改为更适合动物的值
+            print(f"🐾 Animal mode: Using stitching_strength={args.stitching_strength} (optimized for animals)")
+
     ffmpeg_dir = os.path.join(os.getcwd(), "ffmpeg")
     if osp.exists(ffmpeg_dir):
         os.environ["PATH"] += (os.pathsep + ffmpeg_dir)
